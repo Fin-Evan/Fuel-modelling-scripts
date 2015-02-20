@@ -17,7 +17,11 @@ LDS_moisture<-WALFA_boundary_raster
 LDS_moisture[LDS_moisture==0]<- 11.3
 writeRaster(LDS_moisture, filename = "/Users/finleyroberts/Documents/spatial_analysis/Rate of spread/LDS_moisture.tif", overwrite=T)
 
+LDS_average_wind<-WALFA_boundary_raster
+LDS_average_wind[LDS_average_wind==0]<-9.083333333
 
+EDS_average_wind<-WALFA_boundary_raster
+EDS_average_wind[EDS_average_wind==0]<-10.45
 
 #when M is <18% (i.e. late dry season)
 LDS_Fire_danger_function<-function(x,y,z) {3.35.x*exp(-0.0897*y + 0.0403*z)}

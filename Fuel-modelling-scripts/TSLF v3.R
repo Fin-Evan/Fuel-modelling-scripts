@@ -16,7 +16,10 @@ lw00<-raster("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars
 lw00_reclass<-raster("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters (2 areas)/new WALFA reclass/lw00.tif")
 
 #WALFA reclassify, stack and clip to park boundaries
-setwd("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/WALFA (LDS+EDS)")
+setwd("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters (2 areas)/new WALFA reclass")
+raw_walfa_raster<-dir("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/WALFA (LDS+EDS)", full.names = T)
+
+walfa_rasters<-dir("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters (2 areas)/new WALFA reclass", pattern=".tif", full.names=T)
 
 WALFA_firescars<-c(
   "ew00",
@@ -64,19 +67,17 @@ WALFA_firescars<-c(
   "lw98",
   "lw99")
 
+i=20
+
 #resampling to 3 areas raster
 for(i in seq(WALFA_firescars)){
-  r<-raster(WALFA_firescars[i])
-  r[is.na(r)]<-0
-  r[r>1]<-1
-  r<-mask(resample(r,areas3raster, method="ngb"),WALFA_boundary_raster, file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters/3areas",WALFA_firescars[i],"_3areas.tif"),overwrite=TRUE)
-  names(r)<-WALFA_firescars[i]
-  
-  assign(WALFA_firescars[i],r)
-  
+  r<-raster(paste0(WALFA_firescars[i],".tif"))
+  r<-resample(r,WALFA_boundary_raster, method="ngb", filename=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters (2 areas)/3areas/",WALFA_firescars[i],"_3areas.tif"),overwrite=TRUE)
 }
 
-Walfa_rasters<-dir("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters/3areas", pattern=".tif", full.names=T)
+
+
+walfa_rasters<-dir("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters (2 areas)/3areas", pattern=".tif", full.names=T)
 
 years_chrono<-c("90",
                 "91",
@@ -126,6 +127,8 @@ years_chrono_numeric<-c(1990,
 
 ##### sub strings!!! getting characters 3 and 4
 
+i=1
+
 
 #early dry season
 for(i in seq(years_chrono_numeric)){
@@ -134,7 +137,7 @@ for(i in seq(years_chrono_numeric)){
   early_year<- year[grepl(paste0("ew",year_str),year,ignore.case=FALSE)]
   rast_year<-raster(early_year)
   rast_year[rast_year==1]<-years_chrono_numeric[i]+0.6
-  writeRaster(rast_year,file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version",years_chrono_numeric[i],".6_num_tsf.tif"),overwrite=T)
+  writeRaster(rast_year,file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version/",years_chrono_numeric[i],".6_num_tsf.tif"),overwrite=T)
   
 }
 
@@ -145,9 +148,18 @@ for(i in seq(years_chrono_numeric)){
   late_year<- year[grepl(paste0("lw",year_str),year,ignore.case=FALSE)]
   rast_year<-raster(late_year)
   rast_year[rast_year==1]<-years_chrono_numeric[i]+0.9
-  writeRaster(rast_year,file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version",years_chrono_numeric[i],".9_num_tsf.tif"),overwrite=T)
+  writeRaster(rast_year,file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version/",years_chrono_numeric[i],".9_num_tsf.tif"),overwrite=T)
   
 }
+
+"/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version"
+
+num_tsf_1989<-WALFA_boundary_raster
+num_tsf_1989[num_tsf_1989==0]<-1989
+writeRaster(num_tsf_1989,"/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version/1989.6_num_tsf.tif")
+writeRaster(num_tsf_1989,"/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version/1989.9_num_tsf.tif")
+
+
 
 
 season_reverse_chrono<-c(2011.9,
@@ -198,10 +210,16 @@ season_reverse_chrono<-c(2011.9,
                          1989.6)
 
 
+Lw91<-raster("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/new reclassified rasters (2 areas)/3areas/lw91_3areas.tif")
 
-num_tsf<-dir("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF", pattern=".tif",  full.names=T)
+num_tsf<-dir("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version", pattern=".tif",  full.names=T)
+
+num_2011.9<-raster("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/num_TSF/new version/2011.9_num_tsf.tif")
 
 #TSF at late dry season
+
+j=1
+
 
 for (i in seq(season_reverse_chrono)){
   earlier<-as.character(season_reverse_chrono[season_reverse_chrono<season_reverse_chrono[i]])
@@ -212,5 +230,5 @@ for (i in seq(season_reverse_chrono)){
   }
   tsf_mosaic<-calc(tsf_stack, fun=max)
   tsf_mosaic[tsf_mosaic>0]=season_reverse_chrono[i]-tsf_mosaic[tsf_mosaic>0]
-  writeRaster(tsf_mosaic, file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/TSF rasters/WALFA_TSF/",season_reverse_chrono[i], "_TSF_WALFA.tif"), overwrite=T)
+  writeRaster(tsf_mosaic, file=paste0("/Users/finleyroberts/Documents/spatial_analysis/landsat fire scars/Landsat_firescars/TSF rasters/WALFA_TSF/new version/",season_reverse_chrono[i], "_TSF_WALFA.tif"), overwrite=T)
 }
